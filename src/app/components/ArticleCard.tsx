@@ -4,15 +4,20 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 
-interface ArticleCardProps {
-  title: string;
-  content: string;
-  date: string;
-  category: string;
-  imageUrl: string;
+interface Collection {
+  id: number;
+  name: string;
+  description: string | null;
+  coverImage: string;
 }
 
-export default function ArticleCard({ title, content, date, category, imageUrl }: ArticleCardProps) {
+interface ArticleCardProps {
+  title: string;
+  summary: string;
+  collections: Collection[];
+}
+
+export default function ArticleCard({ title, summary, collections }: ArticleCardProps) {
   const router = useRouter();
   const [likes, setLikes] = useState(0);
   const [isLiked, setIsLiked] = useState(false);
@@ -45,6 +50,8 @@ export default function ArticleCard({ title, content, date, category, imageUrl }
     router.push(`/article/${encodeURIComponent(title)}`);
   };
 
+  const coverImage = collections[0]?.coverImage || '/images/article-placeholder.svg';
+
   return (
     <article 
       onClick={handleClick}
@@ -52,7 +59,7 @@ export default function ArticleCard({ title, content, date, category, imageUrl }
     >
       <div className="relative h-48 bg-gray-200 dark:bg-gray-700">
         <Image
-          src={imageError ? '/images/article-placeholder.svg' : imageUrl}
+          src={imageError ? '/images/article-placeholder.svg' : coverImage}
           alt={title}
           fill
           className="object-cover"
@@ -64,12 +71,14 @@ export default function ArticleCard({ title, content, date, category, imageUrl }
         <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
           {title}
         </h2>
-        <p className="text-gray-600 dark:text-gray-400 mb-4">{content}</p>
+        <p className="text-gray-600 dark:text-gray-400 mb-4">{summary}</p>
         <div className="flex items-center justify-between text-sm">
-          <div className="text-gray-500 dark:text-gray-400 flex items-center space-x-2">
-            <span>{date}</span>
-            <span className="mx-2">·</span>
-            <span>{category}</span>
+          <div className="text-gray-500 dark:text-gray-400 flex items-center space-x-2 overflow-hidden">
+            {collections.map((collection) => (
+              <span key={collection.id} className="bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded">
+                {collection.name}
+              </span>
+            ))}
           </div>
           <div className="flex items-center space-x-4" onClick={(e) => e.stopPropagation()}>
             <button

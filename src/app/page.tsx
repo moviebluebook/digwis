@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import Image from 'next/image';
 import Header from './components/Header';
 import ArticleCard from './components/ArticleCard';
 import { articles } from './data/articles';
@@ -11,10 +11,12 @@ export default function Home() {
       <Header />
       <section className="relative py-24 px-4">
         <div className="absolute inset-0 z-0">
-          <img
+          <Image
             src="/images/hero-bg.svg"
             alt="Background"
             className="w-full h-full object-cover"
+            fill
+            priority
           />
         </div>
         <div className="container mx-auto text-center relative z-10">
